@@ -41,6 +41,7 @@
         <div class="form-group"></div>
 
         <button class="form-submit button-89">Đăng Nhập</button>
+        <span class="err-msg"></span>
 
         <div class="spacer"></div>
         <div class="log-in-gg">
@@ -77,31 +78,26 @@
                     if (response.ok) {
                         return response.json();
                     } else {
+                        throw new Error("Lỗi kết nối server");
                     }
                 })
-                // .then(data => {
-                //     localStorage.setItem("at", data.access_token);
-                //     localStorage.setItem("rt", data.refresh_token);
-                //     fetch('/chat-box', {
-                //         method: 'POST',
-                //         headers: {
-                //             'Authorization': `Bearer ${data.access_token}`,
-                //             'Content-Type': 'application/json' // Change content type to JSON
-                //         },
-                //         body: JSON.stringify({
-                //         })
-                //     })
-                    // .then(response => {
-                    //     if (response.ok) {
-                    //
-                    //     } else {
-                    //         console.error('Đăng nhập thất bại');
-                    //     }
-                    // })
-
-                // })
+                .then(data => {
+                    const errMsgSubmit = document.querySelector(".err-msg");
+                    if (data.status === 200) {
+                        if (data.data !== null){
+                            localStorage.setItem("auth", JSON.stringify(data.data));
+                            window.location.href = "/chat-message";
+                        } else {
+                            errMsgSubmit.innerText = "Lỗi đăng nhập";
+                        }
+                    } else if (data.status === 500) {
+                        errMsgSubmit.innerText = "Lỗi server";
+                    } else {
+                        errMsgSubmit.innerText = "Lỗi đăng nhập";
+                    }
+                })
                 .catch(error => {
-                    console.error('Đã xảy ra lỗi:', error);
+                    console.error('Đã xảy ra lỗi: ', error);
                 });
         },
     });

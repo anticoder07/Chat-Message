@@ -53,7 +53,7 @@ public class WebSecurityConfig {
 						.exceptionHandling(exception -> exception.authenticationEntryPoint(unAuthorizationHandler))
 						.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 						.authorizeHttpRequests(request -> request
-										.requestMatchers("/api/auth/*", "/css/**", "/js/**", "/log-in", "/sign-up", "/chat-message").permitAll()
+										.requestMatchers("/api/auth/*", "/css/**", "/js/**", "/log-in", "/sign-up", "/chat-message", "/api/search").permitAll()
 										.anyRequest().authenticated()
 						)
 //						.formLogin(
@@ -65,12 +65,12 @@ public class WebSecurityConfig {
 //														.permitAll()
 //						)
 						.authenticationProvider(daoAuthenticationProvider())
-						.oauth2Login(
-										login -> login
-														.loginPage("/login")
-														.defaultSuccessUrl("/home")
-														.failureUrl("/login?error=true")
-						)
+//						.oauth2Login(
+//										login -> login
+//														.loginPage("/login")
+//														.defaultSuccessUrl("/home")
+//														.failureUrl("/login?error=true")
+//						)
 						.addFilterBefore(authenticationJwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

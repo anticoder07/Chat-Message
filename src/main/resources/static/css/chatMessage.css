@@ -144,6 +144,7 @@ body {
     color: white;
     padding: 6px 20px;
     border-radius: 3px;
+    cursor: pointer;
 }
 
 .item-search {
@@ -163,4 +164,73 @@ input:focus {
 .item-user-container {
     height: 460px;
     overflow-y: auto;
+}
+
+.search-results{
+    width: 300px;
+    /*width: 237px;*/
+    height: auto;
+    z-index: 9999;
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    background-color: white;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.hidden {
+    display: none;
+}
+
+.avatar {
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+#searchResults {
+    padding-left: 10px;
+}
+
+#searchResults li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+    padding: 5px 0px;
+    cursor: pointer;
+}
+
+#searchResults li:hover {
+    background-color: rgba(28, 132, 255, 0.15);
+}
+
+#searchResults li span{
+    font-size: 18px;
+}
+
+.action-header {
+    padding-left: 0px;
+}
+
+.action-header li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+    padding: 5px 0px 5px 15px;
+    cursor: pointer;
+}
+
+.action-header li:hover {
+    background-color: rgba(28, 132, 255, 0.15);
+}
+
+
+.action-header li span{
+    font-size: 18px;
 }

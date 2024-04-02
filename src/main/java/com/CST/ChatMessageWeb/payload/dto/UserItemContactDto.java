@@ -13,6 +13,8 @@ public class UserItemContactDto {
 
 	private String userName;
 
+	private String userEmail;
+
 	private String lastMessage;
 
 	private String state;
@@ -21,6 +23,7 @@ public class UserItemContactDto {
 		this.id = users.getId();
 		this.userName = users.getName();
 		this.lastMessage = lastMessage;
-		this.state = users.getState().toString();
+		this.state = "work";
+		this.userName = users.getUserEmail();
 	}
 }

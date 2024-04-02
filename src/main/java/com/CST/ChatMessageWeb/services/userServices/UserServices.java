@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface UserServices {
 	List<UserItemContactDto> takeUserItemContact();
+
+	List<UserItemContactDto> searchAllUserEmail(String userEmail);
 }
