@@ -18,12 +18,14 @@ public class UsersContacts {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userSend_id", nullable = false)
-	private Users userSend;
+	@JoinColumn(name = "user1_id", nullable = false)
+	private Users user1;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userReceived_id", nullable = false)
-	private Users userReceived;
+	@JoinColumn(name = "user2_id", nullable = false)
+	private Users user2;
+
+	private Long idSend;
 
 	@OneToMany(mappedBy = "usersContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Contacts> contacts;

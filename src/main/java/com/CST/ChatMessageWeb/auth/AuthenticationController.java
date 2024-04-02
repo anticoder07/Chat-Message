@@ -20,6 +20,7 @@ public class AuthenticationController {
 
 	@PostMapping("/log-in")
 	public ResponseEntity<Object> logIn(@RequestBody LogInRequest logInRequest) {
+		System.out.println(logInRequest);
 		try {
 			return ResponseHandler.generateResponse(ResponseHandler.MESSAGE_SUCCESS, HttpStatus.OK, authenticationService.logIn(logInRequest));
 		} catch (Exception e) {

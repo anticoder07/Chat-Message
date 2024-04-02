@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class restControllerChatMsg {
+public class ControllerChatMsg {
 
 	@GetMapping("chat-message")
 	public String chatMessagePage(){

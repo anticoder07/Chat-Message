@@ -35,11 +35,11 @@ public class Users {
 					cascade = CascadeType.ALL)
 	private List<Token> tokens;
 
-	@OneToMany(mappedBy = "userSend", fetch = FetchType.LAZY,
+	@OneToMany(mappedBy = "user1", fetch = FetchType.LAZY,
 					cascade = CascadeType.ALL)
 	private List<UsersContacts> sentContacts;
 
-	@OneToMany(mappedBy = "userReceived", fetch = FetchType.LAZY,
+	@OneToMany(mappedBy = "user2", fetch = FetchType.LAZY,
 					cascade = CascadeType.ALL)
 	private List<UsersContacts> receivedContacts;
 

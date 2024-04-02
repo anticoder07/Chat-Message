@@ -24,6 +24,6 @@ public class UserItemContactDto {
 		this.userName = users.getName();
 		this.lastMessage = lastMessage;
 		this.state = "work";
-		this.userName = users.getUserEmail();
+		this.userEmail = users.getUserEmail();
 	}
 }

@@ -22,59 +22,63 @@ const colors = [
 
 
 function connect(event) {
-    username = document.querySelector("#name").value.trim();
-    console.log(username);
-    if (username) {
-        usernamePage?.classList.add("hidden");
-        chatPage?.classList.remove("hidden");
+    username = "hello";
 
-        let socket = new SockJS("/ws");
+    if(username) {
+        usernamePage.classList.add('hidden');
+        chatPage.classList.remove('hidden');
+
+        var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
+
         stompClient.connect({}, onConnected, onError);
     }
     event.preventDefault();
 }
 
 function onConnected() {
-    stompClient.subscribe("/topic/public", onMessageReceived);
-    stompClient.send(
-        "/app/chat.addUser",
+    // Subscribe to the Public Topic
+    stompClient.subscribe('/topic/public', onMessageReceived);
+
+    // Tell your username to the server
+    stompClient.send("/app/chat.addUser",
         {},
-        JSON.stringify({sender: username, type: "JOIN"})
-    );
-    connectingElement.classList.add("hidden");
+        JSON.stringify({sender: username, type: 'JOIN'})
+    )
+
+    connectingElement.classList.add('hidden');
 }
 
+
 function onError(error) {
-    connectingElement.textContent =
-        "Could not connect to WebSocket server. Please refresh this page to try again!";
-    connectingElement.style.color = "red";
+    connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
+    connectingElement.style.color = 'red';
 }
+
 
 function sendMessage(event) {
     let messageContent = messageInput.value.trim();
-    if (messageContent && stompClient) {
+
+    if(messageContent && stompClient) {
         let chatMessage = {
             sender: username,
-            content: messageContent,
-            type: "CHAT"
+            content: messageInput.value,
+            type: 'CHAT'
         };
-        stompClient.send(
-            "/app/chat.sendMessage",
-            {},
-            JSON.stringify(chatMessage)
-        );
+
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
 }
+
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
 
     let messageElement = document.createElement('li');
 
-    if (message.type === 'JOIN') {
+    if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
@@ -105,7 +109,6 @@ function onMessageReceived(payload) {
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
-
 function getAvatarColor(messageSender) {
     let hash = 0;
     for (let i = 0; i < messageSender.length; i++) {
@@ -128,7 +131,7 @@ const debounce = (func, delay) => {
 function getAccessToken() {
     const authDataString = localStorage.getItem("auth");
     const authData = JSON.parse(authDataString);
-    const accessToken = authData.access_token;
+    const accessToken = authData.token;
     if (accessToken) {
         return accessToken;
     } else {
@@ -229,7 +232,6 @@ fetch(`/api/get-user`, {
         }
     })
     .then(data => {
-        console.log(data)
         if (data.length > 0) {
             actionHeader.innerHTML = '';
             data.forEach(item => {
@@ -271,4 +273,29 @@ fetch(`/api/get-user`, {
     });
 
 
+function handleClickItemUser(id){
+    fetch(`/api/get-user`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `bearer ${getAccessToken()}`
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Lỗi kết nối server");
+            }
+        })
+        .then(data => {
 
+        })
+        .catch(error => {
+            console.error('Đã xảy ra lỗi: ', error);
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    connect(event);
+});
+messageForm.addEventListener('submit', sendMessage, true)

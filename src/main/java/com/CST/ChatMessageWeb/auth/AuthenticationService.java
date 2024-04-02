@@ -42,7 +42,9 @@ public class AuthenticationService {
 		saveUserToken(userDetails, jwtToken);
 		return new AuthenticationResponse(
 						jwtToken,
-						refreshToken
+						user.getId(),
+						user.getName(),
+						user.getRole().toString()
 		);
 	}
 
@@ -64,7 +66,9 @@ public class AuthenticationService {
 		saveUserToken(userDetails, jwtToken);
 		return new AuthenticationResponse(
 						jwtToken,
-						refreshToken
+						users.getId(),
+						users.getName(),
+						users.getRole().toString()
 		);
 	}
 
