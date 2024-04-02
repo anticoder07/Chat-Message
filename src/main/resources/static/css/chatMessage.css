@@ -1,0 +1,166 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1C84FF;
+}
+
+.form-control {
+    width: 350px;
+    height: 30px;
+    font-size: 15px;
+}
+
+.form-group {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.chat-container {
+    background-color: #fff;
+    padding: 3px 20px 10px 20px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.button-submit {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: white;
+    background-color: #1C84FF;
+}
+
+.button-submit:hover {
+    cursor: pointer;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+#message {
+    height: 35px;
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+#messageArea {
+    height: 400px;
+}
+
+.connecting {
+    margin: 0 auto;
+    color: red;
+    font-size: 17px;
+}
+
+.chat-header {
+    border-bottom: 0.1px solid #494949;
+}
+
+.name-user {
+    font-size: 20px;
+}
+
+.item-user {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.item-user:hover {
+    cursor: default;
+    background-color: initial;
+}
+
+.item-container {
+    background-color: white;
+    padding: 0px 5px;
+}
+
+.item-user {
+    display: flex;
+    align-items: center;
+    margin: 5px 0px;
+    padding: 10px 25px 10px 2px;
+}
+
+.item-information {
+    display:  flex;
+    flex-direction: column;
+}
+
+.name-user {
+    font-weight: 600;
+}
+
+.description {
+    font-weight: 400;
+    margin-top: 3px;
+}
+
+.avatar-user {
+    object-fit: cover;
+    border-radius: 50%;
+    height: 54px;
+    width: 54px;
+    margin-right: 15px;
+}
+
+.item-user:hover {
+    cursor: pointer;
+    background-color: #90c2ee3b;
+}
+
+.item-search {
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-icon {
+    background-color: black;
+    color: white;
+    padding: 6px 20px;
+    border-radius: 3px;
+}
+
+.item-search {
+    width: 300px;
+}
+
+#search {
+    height: 31px;
+    font-size: 15px;
+    margin-right: 7px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.item-user-container {
+    height: 460px;
+    overflow-y: auto;
+}

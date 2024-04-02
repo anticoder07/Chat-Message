@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Messenger</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/validator.css}"/>
+</head>
+<body>
+<div class="main">
+    <form action="/api/auth/log-in" method="post" class="form block" id="form-1">
+        <h3 class="heading">Đăng Nhập</h3>
+        <div class="spacer"></div>
+
+        <div class="form-group">
+            <label for="userEmail" class="form-label">Email</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="userEmail"
+                    name="userEmail"
+                    placeholder="VD: caobahuong@gmail.com"
+                    rule="isRequired|isGmail"
+            />
+            <span class="form-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    placeholder="Nhập mật khẩu"
+                    rule="isRequired|min:6|max:20"
+            />
+            <span class="form-message"></span>
+        </div>
+
+        <div class="form-group"></div>
+
+        <button class="form-submit button-89">Đăng Nhập</button>
+
+        <div class="spacer"></div>
+        <div class="log-in-gg">
+            <div class="g-signin2" data-width="315" data-height="30" data-longtitle="true"></div>
+        </div>
+        <div class="spacer-1"></div>
+        <a href="/sign-up" class="signUp-link" style="font-size: 15px;">Đăng Kí Tài Khoản</a>
+
+    </form>
+</div>
+<script th:src="@{/js/validator.js}"></script>
+<script>
+    const min = 6,
+        max = 20;
+    Validator({
+        form: "#form-1",
+        formGroupSelector: ".form-group",
+        rules: [
+            Validator.isRequired("#userEmail", "Vui lòng nhập email của bạn"),
+            Validator.isEmail("#userEmail"),
+
+            Validator.isRequired("#password", "Vui lòng nhập mật khẩu"),
+            Validator.rangeLength("#password", min, max),
+        ],
+        onSubmit: function (data) {
+            fetch('/api/auth/log-in', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                    }
+                })
+                // .then(data => {
+                //     localStorage.setItem("at", data.access_token);
+                //     localStorage.setItem("rt", data.refresh_token);
+                //     fetch('/chat-box', {
+                //         method: 'POST',
+                //         headers: {
+                //             'Authorization': `Bearer ${data.access_token}`,
+                //             'Content-Type': 'application/json' // Change content type to JSON
+                //         },
+                //         body: JSON.stringify({
+                //         })
+                //     })
+                    // .then(response => {
+                    //     if (response.ok) {
+                    //
+                    //     } else {
+                    //         console.error('Đăng nhập thất bại');
+                    //     }
+                    // })
+
+                // })
+                .catch(error => {
+                    console.error('Đã xảy ra lỗi:', error);
+                });
+        },
+    });
+</script>
+<script>
+    function onSuccess(googleUser) {
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+    }
+    function onFailure(error) {
+        console.log(error);
+    }
+    function renderButton() {
+        gapi.signin2.render('my-signin2', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
+    }
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+</body>
+</html>
