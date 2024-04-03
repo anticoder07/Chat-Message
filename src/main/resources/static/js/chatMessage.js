@@ -12,9 +12,12 @@ let searchResultsContainer = document.querySelector(".search-results");
 let itemUserContainer = document.querySelector(".item-user-container");
 let actionHeader = document.querySelector(".item-user-container .action-header");
 
+const authDataString = localStorage.getItem("auth");
+const authData = JSON.parse(authDataString);
 let stompClient = null;
-let username = null;
+let username = authData.name;
 let searchResultsItem = [];
+let idSender = null;
 const colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
@@ -22,13 +25,8 @@ const colors = [
 
 
 function connect(event) {
-    username = "hello";
-
-    if(username) {
-        usernamePage.classList.add('hidden');
-        chatPage.classList.remove('hidden');
-
-        var socket = new SockJS('/ws');
+    if(authData.id) {
+        let socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, onConnected, onError);
@@ -40,10 +38,12 @@ function onConnected() {
     // Subscribe to the Public Topic
     stompClient.subscribe('/topic/public', onMessageReceived);
 
+    stompClient.subscribe(`/user/${authData.id}/queue/private`, onPrivateMessageReceived);
+
     // Tell your username to the server
     stompClient.send("/app/chat.addUser",
         {},
-        JSON.stringify({sender: username, type: 'JOIN'})
+        JSON.stringify({sender: username, senderId: authData.id, type: 'JOIN'})
     )
 
     connectingElement.classList.add('hidden');
@@ -55,23 +55,52 @@ function onError(error) {
     connectingElement.style.color = 'red';
 }
 
-
 function sendMessage(event) {
     let messageContent = messageInput.value.trim();
 
     if(messageContent && stompClient) {
-        let chatMessage = {
-            sender: username,
-            content: messageInput.value,
-            type: 'CHAT'
-        };
+        let chatMessage = {};
 
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        if (idSender !== null) {
+            // Tin nhắn riêng tư
+            chatMessage = {
+                sender: authData.name,
+                senderId: authData.id,
+                receiverId: idSender,
+                content: messageInput.value,
+                type: 'PRIVATE_CHAT'
+            };
+            stompClient.send(`/app/user/${idSender}`, {}, JSON.stringify(chatMessage));
+        } else {
+            // Tin nhắn công cộng
+            chatMessage = {
+                sender: authData.name,
+                senderId: authData.id,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        }
+
         messageInput.value = '';
     }
     event.preventDefault();
 }
-
+// function sendMessage(event) {
+//     let messageContent = messageInput.value.trim();
+//
+//     if(messageContent && stompClient) {
+//         let chatMessage = {
+//             sender: username,
+//             content: messageInput.value,
+//             type: 'CHAT'
+//         };
+//
+//         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+//         messageInput.value = '';
+//     }
+//     event.preventDefault();
+// }
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
@@ -87,17 +116,35 @@ function onMessageReceived(payload) {
     } else {
         messageElement.classList.add('chat-message');
 
+        // avatar
         let avatarElement = document.createElement('i');
+
+        // avatar text
         let avatarText = document.createTextNode(message.sender[0]);
         avatarElement.appendChild(avatarText);
         avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
-        messageElement.appendChild(avatarElement);
-
+        // content
         let usernameElement = document.createElement('span');
         let usernameText = document.createTextNode(message.sender);
         usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
+
+        let avatarUsernameDiv = document.createElement('div');
+        avatarUsernameDiv.className = 'avatar-username-container';
+
+        if (authData.id === message.senderId){
+            avatarUsernameDiv.appendChild(usernameElement);
+            avatarUsernameDiv.appendChild(avatarElement);
+            messageElement.classList.remove('chat-message');
+            messageElement.classList.add('chat-message-left');
+        } else {
+            avatarUsernameDiv.appendChild(avatarElement);
+            avatarUsernameDiv.appendChild(usernameElement);
+        }
+
+
+        messageElement.appendChild(avatarUsernameDiv);
+
     }
 
     let textElement = document.createElement('p');
@@ -109,6 +156,42 @@ function onMessageReceived(payload) {
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
+
+function onPrivateMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    console.log("Private message received:", message);
+
+    // Hiển thị tin nhắn riêng tư ra giao diện
+    let messageElement = document.createElement('li');
+    messageElement.classList.add('private-chat-message');
+
+    let avatarElement = document.createElement('i');
+    let avatarText = document.createTextNode(message.sender[0]);
+    avatarElement.appendChild(avatarText);
+    avatarElement.style['background-color'] = getAvatarColor(message.sender);
+
+    let usernameElement = document.createElement('span');
+    let usernameText = document.createTextNode(message.sender);
+    usernameElement.appendChild(usernameText);
+
+    let avatarUsernameDiv = document.createElement('div');
+    avatarUsernameDiv.className = 'avatar-username-container';
+    avatarUsernameDiv.appendChild(avatarElement);
+    avatarUsernameDiv.appendChild(usernameElement);
+
+    messageElement.appendChild(avatarUsernameDiv);
+
+    let textElement = document.createElement('p');
+    let messageText = document.createTextNode(message.content);
+    textElement.appendChild(messageText);
+
+    messageElement.appendChild(textElement);
+
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+
 function getAvatarColor(messageSender) {
     let hash = 0;
     for (let i = 0; i < messageSender.length; i++) {
@@ -174,7 +257,7 @@ const handleSearch = debounce((event) => {
 
                     // Tạo tên người dùng
                     let usernameElement = document.createElement('span');
-                    let usernameText = document.createTextNode(truncateString(item.userName, 23));
+                    let usernameText = document.createTextNode(truncateString(item.userEmail, 23));
                     usernameElement.appendChild(usernameText);
 
                     function truncateString(str, maxLength) {
@@ -193,6 +276,7 @@ const handleSearch = debounce((event) => {
                     listItem.appendChild(usernameElement);
                     listItem.addEventListener('mousedown', function(event) {
                         event.stopPropagation();  // Ngăn chặn sự kiện click lan truyền
+                        idSender = item.id;
                         console.log(`You clicked on item with ID: ${item.id}`);
                     });
 
@@ -259,6 +343,7 @@ fetch(`/api/get-user`, {
                 listItem.appendChild(avatarElement);
                 listItem.appendChild(usernameElement);
                 listItem.addEventListener('click', function() {
+                    idSender = item.id;
                     console.log(`You clicked on item with ID: ${item.id}`);
                 });
 
@@ -296,6 +381,6 @@ function handleClickItemUser(id){
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    connect(event);
+    connect();
 });
 messageForm.addEventListener('submit', sendMessage, true)
