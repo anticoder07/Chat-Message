@@ -59,8 +59,8 @@
             </div>
             <div class="connecting">Connecting...</div>
             <ul id="messageArea"></ul>
-            <form id="messageForm" name="messageForm">
-                <div class="form-group">
+            <form id="messageForm" name="messageForm" nameForm="messageForm">
+                <div class="form-group clearfix">
                     <div class="input-group">
                         <input
                                 type="text"
@@ -69,17 +69,49 @@
                                 autocomplete="off"
                                 class="form-control"
                         />
-                        <button type="submit" class="button-submit">Gửi</button>
+                        <button type="submit" class="button-submit">
+                            <i class="fa-regular fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!--<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js}"></script>-->
-<!--<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js}"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script th:src="@{/js/chatMessage.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.5/js.cookie.min.js"
+        integrity="sha512-nlp9/l96/EpjYBx7EP7pGASVXNe80hGhYAUrjeXnu/fyF5Py0/RXav4BBNs7n5Hx1WFhOEOWSAVjGeC3oKxDVQ=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer">
+</script>
+
+<script>
+    let searchDelayTime = 200;
+    let actionHeader = document.querySelector(".item-user-container .action-header");
+    let messageForm = document.querySelector("#messageForm");
+    let messageInput = document.querySelector("#message");
+    let messageArea = document.querySelector("#messageArea");
+    let connectingElement = document.querySelector(".connecting");
+    let search = document.querySelector("#search");
+    let searchResults = document.querySelector("#searchResults");
+    let searchResultsContainer = document.querySelector(".search-results");
+
+    let searchResultsItem = [];
+    let stompClient = null;
+    let currentSubscription;
+    let username = null;
+    let roomId = null;
+    let topic = null;
+    const colors = [
+        '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+        '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+    ];
+</script>
+<script th:src="@{/js/authentication.js}"></script>
+<script th:src="@{/js/theBaseServices.js}"></script>
+<script th:src="@{/js/sideBarServices.js}"></script>
+<script th:src="@{/js/searchServices.js}"></script>
+<script th:src="@{/js/websocketServices.js}"></script>
 </body>
 </html>

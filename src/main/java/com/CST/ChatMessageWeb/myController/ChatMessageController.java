@@ -30,7 +30,6 @@ public class ChatMessageController {
 	}
 	@PostMapping("/api/search")
 	public ResponseEntity<List<UserItemContactDto>> searchUserItemContact(@RequestParam("s") String s) {
-		System.out.println(s);
 		List<UserItemContactDto> userItemContactDtoList = userServices.searchAllUserEmail(s);
 
 		return ResponseEntity.ok(userItemContactDtoList);

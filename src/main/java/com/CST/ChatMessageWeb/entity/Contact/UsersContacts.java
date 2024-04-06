@@ -1,7 +1,10 @@
-package com.CST.ChatMessageWeb.entity;
+package com.CST.ChatMessageWeb.entity.Contact;
 
+import com.CST.ChatMessageWeb.entity.Contact.Contacts;
+import com.CST.ChatMessageWeb.entity.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class UsersContacts {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

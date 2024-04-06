@@ -4,8 +4,6 @@ import com.CST.ChatMessageWeb.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 public class UserItemContactDto {

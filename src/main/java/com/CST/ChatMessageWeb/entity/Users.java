@@ -1,5 +1,6 @@
 package com.CST.ChatMessageWeb.entity;
 
+import com.CST.ChatMessageWeb.entity.Contact.UsersContacts;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
