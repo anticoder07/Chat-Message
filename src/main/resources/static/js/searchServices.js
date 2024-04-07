@@ -39,7 +39,11 @@ const handleSearch = debounce((event) => {
                     listItem.appendChild(usernameElement);
                     listItem.addEventListener('mousedown', function(event) {
                         event.stopPropagation();
-                        window.location.href= `/chat-message?id=${item.id}`;
+                        let duoRoomId = `${getAuthId()}_${item.id}`;
+                        if (getAuthId() > item.id){
+                            duoRoomId = `${item.id}_${getAuthId()}`;
+                        }
+                        window.location.href= `/chat-message?id=${duoRoomId}`;
                     });
 
                     searchResults.appendChild(listItem);

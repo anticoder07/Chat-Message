@@ -28,4 +28,9 @@ public class Contacts {
 	@JoinColumn(name = "usersContact_id", nullable = false)
 	private UsersContacts usersContact;
 
+	public Contacts(String content, Date sentDate, UsersContacts usersContact) {
+		this.content = content;
+		this.sentDate = sentDate;
+		this.usersContact = usersContact;
+	}
 }

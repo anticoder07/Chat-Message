@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,15 @@ public class UsersContacts {
 
 	private Long idSend;
 
+	private Date lastContactTime;
+
 	@OneToMany(mappedBy = "usersContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Contacts> contacts;
+
+	public UsersContacts(Users user1, Users user2, Long idSend) {
+		this.user1 = user1;
+		this.user2 = user2;
+		this.idSend = idSend;
+	}
 }
 

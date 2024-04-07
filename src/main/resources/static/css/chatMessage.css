@@ -66,8 +66,8 @@ body {
 }
 
 #messageArea {
-    height: 400px;
-    overflow-y: scroll;
+    height: 450px;
+    overflow-y: auto;
     padding-left: 10px;
 }
 
@@ -163,6 +163,10 @@ body {
     border-radius: 50%;
     height: 54px;
     width: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
     margin-right: 15px;
 }
 

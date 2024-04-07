@@ -1,6 +1,7 @@
 package com.CST.ChatMessageWeb.myController;
 
 import com.CST.ChatMessageWeb.payload.dto.ChatMessage;
+import com.CST.ChatMessageWeb.services.ChatMessageServices;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,9 @@ import static java.lang.String.format;
 @Controller
 @RequiredArgsConstructor
 public class WebSocketController {
-	private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
-
 	private final SimpMessageSendingOperations messagingTemplate;
+
+	private final ChatMessageServices chatMessageServices;
 
 	@GetMapping("/chat-message")
 	public String chatMessage() {
@@ -30,7 +31,9 @@ public class WebSocketController {
 
 	@MessageMapping("/chat/{roomId}/sendMessage")
 	public void sendMessage(@DestinationVariable String roomId, @Payload ChatMessage chatMessage) {
-		messagingTemplate.convertAndSend(format("/channel/" + roomId), chatMessage);
+		if (chatMessageServices.saveMessage(chatMessage, roomId)) {
+			messagingTemplate.convertAndSend(format("/channel/" + roomId), chatMessage);
+		}
 	}
 
 	@MessageMapping("/chat/{roomId}/addUser")

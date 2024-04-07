@@ -1,12 +1,15 @@
 package com.CST.ChatMessageWeb.myController;
 
+import com.CST.ChatMessageWeb.payload.dto.ContactDto;
 import com.CST.ChatMessageWeb.payload.dto.UserItemContactDto;
-import com.CST.ChatMessageWeb.services.userServices.UserServicesImpl;
+import com.CST.ChatMessageWeb.services.SearchServices;
+import com.CST.ChatMessageWeb.services.UserServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -14,27 +17,37 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 public class ChatMessageController {
-	private final UserServicesImpl userServices;
+	private final SearchServices searchServices;
+
+	private final UserServices userServices;
 
 	@GetMapping("/api/get-user")
-	public ResponseEntity<List<UserItemContactDto>> getAllUserItemContact() {
-		UserItemContactDto u1 = new UserItemContactDto(1L, "huong", "hello world","hello world", "work");
-		UserItemContactDto u2 = new UserItemContactDto(2L, "username2", "message2","hello world", "work2");
-		UserItemContactDto u3 = new UserItemContactDto(3L, "username3", "message3","hello world", "work3");
-		UserItemContactDto u4 = new UserItemContactDto(4L, "username4", "message4","hello world", "work4");
-		UserItemContactDto u5 = new UserItemContactDto(5L, "username5", "message5","hello world", "work5");
+	public ResponseEntity<List<UserItemContactDto>> getUserItemContact() {
+		List<UserItemContactDto> userList = userServices.getAllUserContact();
 
-		List<UserItemContactDto> userList = Arrays.asList(u1, u2, u3, u4, u5, u2, u3, u4, u5, u2, u3, u4, u5, u2, u3, u4, u5);
+//		UserItemContactDto u = new UserItemContactDto(1L, "huong", "huong@gmail.com", "hello", "work");
+//		List<UserItemContactDto> userList = new ArrayList<>(Collections.nCopies(6, u));
 
 		return ResponseEntity.ok(userList);
 	}
+
+	@GetMapping("/api/get-user-current/{id}")
+	public ResponseEntity<UserItemContactDto> getUserItemCurrentContact(@PathVariable Long id) {
+		UserItemContactDto userList = userServices.getUserById(id);
+		return ResponseEntity.ok(userList);
+	}
+
+	@GetMapping("/api/get-chat")
+	public ResponseEntity<List<ContactDto>> getChatUserById(@RequestParam("i") Long id) {
+		List<ContactDto> userList = List.of();
+
+		return ResponseEntity.ok(userList);
+	}
+
 	@PostMapping("/api/search")
 	public ResponseEntity<List<UserItemContactDto>> searchUserItemContact(@RequestParam("s") String s) {
-		List<UserItemContactDto> userItemContactDtoList = userServices.searchAllUserEmail(s);
+		List<UserItemContactDto> userItemContactDtoList = searchServices.searchAllUserEmail(s);
 
 		return ResponseEntity.ok(userItemContactDtoList);
 	}
-
-
-
 }

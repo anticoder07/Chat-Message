@@ -1,14 +1,11 @@
-let url = new URL(window.location.href);
-let id = url.searchParams.get('id');
-
-function connect(event) {
+function connect() {
     if (id) {
         let socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, onConnected, onError);
     }
-    event.preventDefault();
+    // event.preventDefault();
 }
 
 function enterRoom(newRoomId) {
@@ -48,6 +45,7 @@ function sendMessage(event) {
     } else if (messageContent && stompClient) {
         let chatMessage = {
             sender: getAuthName(),
+            senderId: getAuthId(),
             content: messageInput.value,
             type: 'CHAT'
         };
@@ -110,6 +108,7 @@ function onMessageReceived(payload) {
 
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
+    handleSideBarService();
 }
 document.addEventListener("DOMContentLoaded", function() {
     connect();

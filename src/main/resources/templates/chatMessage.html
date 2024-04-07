@@ -43,17 +43,10 @@
             <div class="chat-header">
                 <div class="item-user">
                     <div class="avatar-user">
-                        <img
-                                src="./image.png"
-                                alt="avatar"
-                                class="avatar-user"
-                                width="300"
-                                height="200"
-                        />
                     </div>
                     <div class="item-information">
-                        <span class="name-user">Cao Bá Hướng</span>
-                        <span class="description">Đang hoạt động</span>
+                        <span class="name-user"></span>
+                        <span class="description"></span>
                     </div>
                 </div>
             </div>
@@ -103,6 +96,10 @@
     let username = null;
     let roomId = null;
     let topic = null;
+
+    let url = new URL(window.location.href);
+    let id = url.searchParams.get('id');
+
     const colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
         '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
