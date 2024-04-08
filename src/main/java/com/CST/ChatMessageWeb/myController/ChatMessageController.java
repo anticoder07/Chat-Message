@@ -2,6 +2,7 @@ package com.CST.ChatMessageWeb.myController;
 
 import com.CST.ChatMessageWeb.payload.dto.ContactDto;
 import com.CST.ChatMessageWeb.payload.dto.UserItemContactDto;
+import com.CST.ChatMessageWeb.services.ChatMessageServices;
 import com.CST.ChatMessageWeb.services.SearchServices;
 import com.CST.ChatMessageWeb.services.UserServices;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,11 @@ public class ChatMessageController {
 
 	private final UserServices userServices;
 
+	private final ChatMessageServices chatMessageServices;
+
 	@GetMapping("/api/get-user")
 	public ResponseEntity<List<UserItemContactDto>> getUserItemContact() {
 		List<UserItemContactDto> userList = userServices.getAllUserContact();
-
-//		UserItemContactDto u = new UserItemContactDto(1L, "huong", "huong@gmail.com", "hello", "work");
-//		List<UserItemContactDto> userList = new ArrayList<>(Collections.nCopies(6, u));
 
 		return ResponseEntity.ok(userList);
 	}
@@ -38,8 +38,8 @@ public class ChatMessageController {
 	}
 
 	@GetMapping("/api/get-chat")
-	public ResponseEntity<List<ContactDto>> getChatUserById(@RequestParam("i") Long id) {
-		List<ContactDto> userList = List.of();
+	public ResponseEntity<List<ContactDto>> getChatUserById(@RequestParam("i") String id) {
+		List<ContactDto> userList = chatMessageServices.getMessageById(id);
 
 		return ResponseEntity.ok(userList);
 	}

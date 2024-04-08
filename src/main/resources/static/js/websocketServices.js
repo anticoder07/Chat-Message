@@ -5,7 +5,6 @@ function connect() {
 
         stompClient.connect({}, onConnected, onError);
     }
-    // event.preventDefault();
 }
 
 function enterRoom(newRoomId) {
@@ -49,7 +48,16 @@ function sendMessage(event) {
             content: messageInput.value,
             type: 'CHAT'
         };
+
+        let parts = roomId.split("_");
+        console.log(roomId)
+        let idSenderNotification = parts[0] === getAuthId() ? parts[0] : parts[1];
+
+        stompClient.send(`/app/notification/${idSenderNotification}/sendMessage`, {}, JSON.stringify(chatMessage));
+
         stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
+
+
     }
     messageInput.value = '';
     event.preventDefault();
@@ -60,7 +68,7 @@ function onMessageReceived(payload) {
 
     let messageElement = document.createElement('li');
 
-    if(message.type === 'JOIN') {
+    if (message.type === 'JOIN') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
@@ -85,7 +93,7 @@ function onMessageReceived(payload) {
         let avatarUsernameDiv = document.createElement('div');
         avatarUsernameDiv.className = 'avatar-username-container';
 
-        if (getAuthName() === message.sender){
+        if (getAuthName() === message.sender) {
             avatarUsernameDiv.appendChild(usernameElement);
             avatarUsernameDiv.appendChild(avatarElement);
             messageElement.classList.remove('chat-message');
@@ -110,7 +118,8 @@ function onMessageReceived(payload) {
     messageArea.scrollTop = messageArea.scrollHeight;
     handleSideBarService();
 }
-document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", function () {
     connect();
 });
 messageForm.addEventListener('submit', sendMessage, true)

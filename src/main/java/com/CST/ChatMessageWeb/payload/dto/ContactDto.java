@@ -10,7 +10,13 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContactDto {
+	private Long id;
+
 	private Date sentDate;
 
 	private String message;
+
+	private Long sendId;
+
+	private String sendName;
 }

@@ -45,7 +45,6 @@ function handleClickItemUser() {
             return response.json();
         })
         .then(data => {
-            console.log(data)
             let avatar = document.querySelector(".chat-header .item-user .avatar-user");
             let name = document.querySelector(".chat-header .item-user .item-information .name-user");
             let des = document.querySelector(".chat-header .item-user .item-information .description");

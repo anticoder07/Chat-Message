@@ -92,7 +92,9 @@
 
     let searchResultsItem = [];
     let stompClient = null;
+    let stompNotification = null;
     let currentSubscription;
+    let notificationSubscription;
     let username = null;
     let roomId = null;
     let topic = null;
@@ -108,7 +110,9 @@
 <script th:src="@{/js/authentication.js}"></script>
 <script th:src="@{/js/theBaseServices.js}"></script>
 <script th:src="@{/js/sideBarServices.js}"></script>
+<script th:src="@{/js/chatMessageServices.js}"></script>
 <script th:src="@{/js/searchServices.js}"></script>
 <script th:src="@{/js/websocketServices.js}"></script>
+<!--<script th:src="@{/js/websocketNotificationService.js}"></script>-->
 </body>
 </html>

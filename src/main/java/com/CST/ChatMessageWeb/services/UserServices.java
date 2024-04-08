@@ -44,7 +44,7 @@ public class UserServices {
 		List<UserItemContactDto> userItemContactDtoList = new ArrayList<>();
 
 		usersContactsList1.forEach(item -> {
-			Users users = (item.getIdSend().equals(item.getUser1().getId())) ? item.getUser2() : item.getUser1();
+			Users users = item.getUser1().getId().equals(getUser().getId()) ? item.getUser2() : item.getUser1();
 			if (users != null) {
 				userItemContactDtoList.add(new UserItemContactDto(users, "hello world"));
 			}

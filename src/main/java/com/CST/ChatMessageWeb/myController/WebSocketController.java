@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,10 @@ public class WebSocketController {
 
 	@MessageMapping("/chat/{roomId}/sendMessage")
 	public void sendMessage(@DestinationVariable String roomId, @Payload ChatMessage chatMessage) {
+		if (!roomId.contains("_")) {
+			messagingTemplate.convertAndSend(format("/notification/" + roomId), chatMessage);
+			return;
+		}
 		if (chatMessageServices.saveMessage(chatMessage, roomId)) {
 			messagingTemplate.convertAndSend(format("/channel/" + roomId), chatMessage);
 		}
@@ -40,13 +45,24 @@ public class WebSocketController {
 	public void addUser(@DestinationVariable String roomId, @Payload ChatMessage chatMessage,
 											SimpMessageHeaderAccessor headerAccessor) {
 		String currentRoomId = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("room_id", roomId);
-		if (currentRoomId != null) {
-			ChatMessage leaveMessage = new ChatMessage();
-			leaveMessage.setType(ChatMessage.MessageType.LEAVE);
-			leaveMessage.setSender(chatMessage.getSender());
-			messagingTemplate.convertAndSend(format("/channel/" + currentRoomId), leaveMessage);
+		if (!roomId.contains("_")) {
+			if (currentRoomId != null) {
+				ChatMessage leaveMessage = new ChatMessage();
+				leaveMessage.setType(ChatMessage.MessageType.LEAVE);
+				leaveMessage.setSender(chatMessage.getSender());
+				messagingTemplate.convertAndSend(format("/notification/" + currentRoomId), leaveMessage);
+			}
+			headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+			messagingTemplate.convertAndSend(format("/notification/" + roomId), chatMessage);
+		} else {
+			if (currentRoomId != null) {
+				ChatMessage leaveMessage = new ChatMessage();
+				leaveMessage.setType(ChatMessage.MessageType.LEAVE);
+				leaveMessage.setSender(chatMessage.getSender());
+				messagingTemplate.convertAndSend(format("/channel/" + currentRoomId), leaveMessage);
+			}
+			headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+			messagingTemplate.convertAndSend(format("/channel/" + roomId), chatMessage);
 		}
-		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-		messagingTemplate.convertAndSend(format("/channel/" + roomId), chatMessage);
 	}
 }

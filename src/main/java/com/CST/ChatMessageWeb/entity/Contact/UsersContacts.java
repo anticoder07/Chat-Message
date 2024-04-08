@@ -30,17 +30,14 @@ public class UsersContacts {
 	@JoinColumn(name = "user2_id", nullable = false)
 	private Users user2;
 
-	private Long idSend;
-
 	private Date lastContactTime;
 
 	@OneToMany(mappedBy = "usersContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Contacts> contacts;
 
-	public UsersContacts(Users user1, Users user2, Long idSend) {
+	public UsersContacts(Users user1, Users user2) {
 		this.user1 = user1;
 		this.user2 = user2;
-		this.idSend = idSend;
 	}
 }
 

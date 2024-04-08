@@ -12,7 +12,6 @@ function handleSideBarService() {
             return response.json();
         })
         .then(data => {
-            console.log(data)
             if (data.length > 0) {
                 actionHeader.innerHTML = '';
                 data.forEach(item => {
