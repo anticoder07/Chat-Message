@@ -99,6 +99,7 @@ body {
 .chat-message-left p {
     display: flex;
     justify-content: flex-end;
+    padding-right: 47px;
 }
 
 .avatar-username-container{
@@ -281,4 +282,12 @@ input:focus {
 .item-user:hover {
     cursor: default;
     background-color: initial;
+}
+
+.chat-message-left .avatar-username-container {
+    display: none;
+}
+
+.chat-message-left .avatar-username-container span {
+    display: none;
 }

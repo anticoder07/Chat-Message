@@ -9,7 +9,7 @@ function connect() {
 
 function enterRoom(newRoomId) {
     roomId = newRoomId;
-    Cookies.set('roomId', roomId);
+    // Cookies.set('roomId', roomId);
     topic = `/app/chat/${newRoomId}`;
 
     if (currentSubscription) {
@@ -32,7 +32,6 @@ function onError(error) {
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
 }
-
 function sendMessage(event) {
     let messageContent = messageInput.value.trim();
     if (messageContent.startsWith('/join ')) {
@@ -50,14 +49,11 @@ function sendMessage(event) {
         };
 
         let parts = roomId.split("_");
-        console.log(roomId)
-        let idSenderNotification = parts[0] === getAuthId() ? parts[0] : parts[1];
+        let idSenderNotification = parts[1] == getAuthId() ? parts[0] : parts[1];
 
-        stompClient.send(`/app/notification/${idSenderNotification}/sendMessage`, {}, JSON.stringify(chatMessage));
+        stompNotification.send(`/notification/${idSenderNotification}/sendMessage`, {}, JSON.stringify(chatMessage));
 
         stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
-
-
     }
     messageInput.value = '';
     event.preventDefault();

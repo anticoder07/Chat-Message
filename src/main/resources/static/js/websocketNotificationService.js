@@ -3,19 +3,20 @@ function connectNotification() {
         let socket = new SockJS('/ws');
         stompNotification = Stomp.over(socket);
 
-        notificationSubscription = stompNotification.connect({}, () => enterRoomNotification(getAuthId()), {});
+        stompNotification.connect({}, () => {
+            console.log('Connected to Notification');
+            enterRoomNotification(getAuthId());
+        }, onError);
     }
 }
-
 function enterRoomNotification(newRoomId) {
-    topic = `/app/notification/${newRoomId}`;
+    topicNotification = `/notification/${newRoomId}`;
+    stompNotification.subscribe(topicNotification, onMessageReceivedNotification);
+    stompNotification.send(`${topicNotification}/addUser`, {}, JSON.stringify({sender: getAuthName(), type: 'JOIN'}));
+}
 
-    stompNotification.subscribe(`/channel/${newRoomId}`, onMessageReceivedNotification);
-
-    stompNotification.send(`${topic}/addUser`,
-        {},
-        JSON.stringify({sender: getAuthName(), type: 'JOIN'})
-    );
+function onError(error) {
+    console.error('Error during WebSocket connection:', error);
 }
 
 function onMessageReceivedNotification(payload) {

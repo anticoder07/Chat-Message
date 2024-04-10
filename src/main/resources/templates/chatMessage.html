@@ -98,6 +98,7 @@
     let username = null;
     let roomId = null;
     let topic = null;
+    let topicNotification = null;
 
     let url = new URL(window.location.href);
     let id = url.searchParams.get('id');
@@ -112,7 +113,7 @@
 <script th:src="@{/js/sideBarServices.js}"></script>
 <script th:src="@{/js/chatMessageServices.js}"></script>
 <script th:src="@{/js/searchServices.js}"></script>
+<script th:src="@{/js/websocketNotificationService.js}"></script>
 <script th:src="@{/js/websocketServices.js}"></script>
-<!--<script th:src="@{/js/websocketNotificationService.js}"></script>-->
 </body>
 </html>

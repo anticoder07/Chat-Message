@@ -54,6 +54,7 @@ public class WebSocketController {
 			}
 			headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
 			messagingTemplate.convertAndSend(format("/notification/" + roomId), chatMessage);
+			System.out.println(roomId);
 		} else {
 			if (currentRoomId != null) {
 				ChatMessage leaveMessage = new ChatMessage();
