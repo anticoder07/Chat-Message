@@ -1,6 +1,6 @@
 function connect() {
     if (id) {
-        let socket = new SockJS('/ws');
+        let socket = new SockJS(endPointWs);
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, onConnected, onError);
@@ -9,7 +9,6 @@ function connect() {
 
 function enterRoom(newRoomId) {
     roomId = newRoomId;
-    // Cookies.set('roomId', roomId);
     topic = `/app/chat/${newRoomId}`;
 
     if (currentSubscription) {
@@ -32,6 +31,7 @@ function onError(error) {
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
 }
+
 function sendMessage(event) {
     let messageContent = messageInput.value.trim();
     if (messageContent.startsWith('/join ')) {
@@ -49,9 +49,9 @@ function sendMessage(event) {
         };
 
         let parts = roomId.split("_");
-        let idSenderNotification = parts[1] == getAuthId() ? parts[0] : parts[1];
+        let idSenderNotification = Number(parts[1]) === Number(getAuthId()) ? parts[0] : parts[1];
 
-        stompNotification.send(`/notification/${idSenderNotification}/sendMessage`, {}, JSON.stringify(chatMessage));
+        stompNotification.send(`/app/notification/${idSenderNotification}/sendMessages`, {}, JSON.stringify(chatMessage));
 
         stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
     }

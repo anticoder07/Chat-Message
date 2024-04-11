@@ -1,18 +1,21 @@
 function connectNotification() {
     if (getAuthId()) {
-        let socket = new SockJS('/ws');
+        let socket = new SockJS(endPointWs);
         stompNotification = Stomp.over(socket);
 
         stompNotification.connect({}, () => {
-            console.log('Connected to Notification');
             enterRoomNotification(getAuthId());
         }, onError);
     }
 }
 function enterRoomNotification(newRoomId) {
-    topicNotification = `/notification/${newRoomId}`;
-    stompNotification.subscribe(topicNotification, onMessageReceivedNotification);
-    stompNotification.send(`${topicNotification}/addUser`, {}, JSON.stringify({sender: getAuthName(), type: 'JOIN'}));
+    topicNotification = `/app/notification/${newRoomId}`;
+
+    stompNotification.subscribe(`/current-user/${newRoomId}`, onMessageReceivedNotification);
+    stompNotification.send(`${topicNotification}/addUsers`,
+        {},
+        JSON.stringify({sender: username, type: 'JOIN'})
+    );
 }
 
 function onError(error) {
@@ -24,7 +27,5 @@ function onMessageReceivedNotification(payload) {
     console.log(message);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    connectNotification();
-});
+connectNotification();
 

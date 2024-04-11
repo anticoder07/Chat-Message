@@ -79,6 +79,7 @@
         referrerpolicy="no-referrer">
 </script>
 
+<script th:src="@{/js/authentication.js}"></script>
 <script>
     let searchDelayTime = 200;
     let actionHeader = document.querySelector(".item-user-container .action-header");
@@ -91,14 +92,16 @@
     let searchResultsContainer = document.querySelector(".search-results");
 
     let searchResultsItem = [];
+
+    let endPointWs = '/ws';
     let stompClient = null;
     let stompNotification = null;
     let currentSubscription;
-    let notificationSubscription;
-    let username = null;
     let roomId = null;
     let topic = null;
     let topicNotification = null;
+
+    let username = getAuthName();
 
     let url = new URL(window.location.href);
     let id = url.searchParams.get('id');
@@ -108,7 +111,6 @@
         '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
     ];
 </script>
-<script th:src="@{/js/authentication.js}"></script>
 <script th:src="@{/js/theBaseServices.js}"></script>
 <script th:src="@{/js/sideBarServices.js}"></script>
 <script th:src="@{/js/chatMessageServices.js}"></script>
