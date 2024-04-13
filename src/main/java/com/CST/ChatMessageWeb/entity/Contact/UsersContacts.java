@@ -35,9 +35,12 @@ public class UsersContacts {
 	@OneToMany(mappedBy = "usersContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Contacts> contacts;
 
-	public UsersContacts(Users user1, Users user2) {
+	private EStateNotification stateNotification;
+
+	public UsersContacts(Users user1, Users user2, EStateNotification stateNotification) {
 		this.user1 = user1;
 		this.user2 = user2;
+		this.stateNotification = stateNotification;
 	}
 }
 

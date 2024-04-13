@@ -1,8 +1,6 @@
 package com.CST.ChatMessageWeb.myController;
 
-import com.CST.ChatMessageWeb.entity.Users;
 import com.CST.ChatMessageWeb.payload.dto.ChatMessage;
-import com.CST.ChatMessageWeb.repository.UserRepo;
 import com.CST.ChatMessageWeb.services.ChatMessageServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -10,8 +8,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -40,7 +36,8 @@ public class WebSocketController {
 
 	@MessageMapping("/notification/{roomId}/sendMessages")
 	public void sendMessages(@DestinationVariable String roomId, @Payload ChatMessage chatMessage) {
-			messagingTemplate.convertAndSend(format("/current-user/" + roomId), chatMessage);
+		messagingTemplate.convertAndSend(format("/current-user/" + roomId), chatMessage);
+		chatMessageServices.handleNotificationState(chatMessage, roomId);
 	}
 
 	@MessageMapping("/chat/{roomId}/addUser")
@@ -63,6 +60,7 @@ public class WebSocketController {
 	@MessageMapping("/notification/{roomId}/addUsers")
 	public void addUsers(@DestinationVariable String roomId, @Payload ChatMessage chatMessage,
 											 SimpMessageHeaderAccessor headerAccessor) {
+
 		String currentRoomId = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("room_id", roomId);
 
 		ChatMessage leaveMessage = new ChatMessage();

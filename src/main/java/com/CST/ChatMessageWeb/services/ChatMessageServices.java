@@ -1,6 +1,7 @@
 package com.CST.ChatMessageWeb.services;
 
 import com.CST.ChatMessageWeb.entity.Contact.Contacts;
+import com.CST.ChatMessageWeb.entity.Contact.EStateNotification;
 import com.CST.ChatMessageWeb.entity.Contact.UsersContacts;
 import com.CST.ChatMessageWeb.entity.Users;
 import com.CST.ChatMessageWeb.payload.dto.ChatMessage;
@@ -30,10 +31,25 @@ public class ChatMessageServices {
 		return userRepository.findByUserEmail(userDetails.getUsername()).orElseThrow();
 	}
 
-	public boolean saveMessage(ChatMessage chatMessage, String roomId) {
+	private List<Long> detachedRoomId(String roomId) {
 		String[] parts = roomId.split("_");
 		Long senderId = Math.min(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
 		Long receiverId = Math.max(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
+
+		List<Long> ids = new ArrayList<>();
+		ids.add(senderId);
+		ids.add(receiverId);
+
+		return ids;
+	}
+
+	private boolean reviewUser1_User2(List<Long> roomId, String senderId) {
+		return roomId.get(0).equals(Long.parseLong(senderId));
+	}
+
+	public boolean saveMessage(ChatMessage chatMessage, String roomId) {
+		Long senderId = detachedRoomId(roomId).get(0);
+		Long receiverId = detachedRoomId(roomId).get(1);
 
 		Users user1 = userRepository.findById(senderId).orElse(null);
 		if (user1 == null) return false;
@@ -41,11 +57,14 @@ public class ChatMessageServices {
 		Users user2 = userRepository.findById(receiverId).orElse(null);
 		if (user2 == null) return false;
 
+		EStateNotification stateNotification = reviewUser1_User2(detachedRoomId(roomId), chatMessage.getSenderId()) ? EStateNotification.USER2 : EStateNotification.USER1;
+
 		UsersContacts usersContacts = usersContactRepository.findByUser1AndUser2(user1, user2).orElse(null);
 		if (usersContacts == null) {
 			UsersContacts newUsersContacts = new UsersContacts(
 							user1,
-							user2
+							user2,
+							stateNotification
 			);
 			usersContactRepository.save(newUsersContacts);
 
@@ -71,6 +90,7 @@ public class ChatMessageServices {
 			contactRepository.save(newContacts);
 
 			usersContacts.setLastContactTime(currentChat);
+			usersContacts.setStateNotification(stateNotification);
 			usersContactRepository.save(usersContacts);
 		}
 
@@ -79,9 +99,8 @@ public class ChatMessageServices {
 
 	public List<ContactDto> getMessageById(String roomId) {
 		List<ContactDto> contactDtoList = new ArrayList<>();
-		String[] parts = roomId.split("_");
-		Long senderId = Math.min(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
-		Long receiverId = Math.max(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
+		Long senderId = detachedRoomId(roomId).get(0);
+		Long receiverId = detachedRoomId(roomId).get(1);
 
 		Users user1 = userRepository.findById(senderId).orElse(null);
 		if (user1 == null) return contactDtoList;
@@ -110,5 +129,24 @@ public class ChatMessageServices {
 			return contactDtoList;
 		}
 		return contactDtoList;
+	}
+
+	public void handleNotificationState(ChatMessage chatMessage, String roomIdContact) {
+		Long senderId = Math.min(Long.parseLong(chatMessage.getSenderId()), Long.parseLong(roomIdContact));
+		Long receiverId = Math.max(Long.parseLong(chatMessage.getSenderId()), Long.parseLong(roomIdContact));
+
+		Users user1 = userRepository.findById(senderId).orElse(null);
+		if (user1 == null) return;
+
+		Users user2 = userRepository.findById(receiverId).orElse(null);
+		if (user2 == null) return;
+
+		if (chatMessage.getSenderId().equals(roomIdContact)) {
+			UsersContacts usersContacts = usersContactRepository.findByUser1AndUser2(user1, user2).orElse(null);
+			if (usersContacts != null) {
+				usersContacts.setStateNotification(EStateNotification.ALL);
+				usersContactRepository.save(usersContacts);
+			}
+		}
 	}
 }

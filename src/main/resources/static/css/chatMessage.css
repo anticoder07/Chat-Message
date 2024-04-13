@@ -291,3 +291,11 @@ input:focus {
 .chat-message-left .avatar-username-container span {
     display: none;
 }
+
+.red-notification {
+    color: #f33a58;
+}
+
+.white-notification {
+    color: white;
+}

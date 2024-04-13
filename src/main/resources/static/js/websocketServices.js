@@ -65,11 +65,11 @@ function onMessageReceived(payload) {
     let messageElement = document.createElement('li');
 
     if (message.type === 'JOIN') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' joined!';
+        // messageElement.classList.add('event-message');
+        // message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' left!';
+        // messageElement.classList.add('event-message');
+        // message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
 

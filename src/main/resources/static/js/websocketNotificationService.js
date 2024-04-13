@@ -8,6 +8,7 @@ function connectNotification() {
         }, onError);
     }
 }
+
 function enterRoomNotification(newRoomId) {
     topicNotification = `/app/notification/${newRoomId}`;
 
@@ -24,7 +25,9 @@ function onError(error) {
 
 function onMessageReceivedNotification(payload) {
     let message = JSON.parse(payload.body);
-    console.log(message);
+    console.log(message)
+    let userNotification = document.querySelector(`#user-${message.senderId}`);
+    userNotification.classList.add("red-notification");
 }
 
 connectNotification();

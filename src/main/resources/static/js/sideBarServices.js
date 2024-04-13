@@ -12,6 +12,8 @@ function handleSideBarService() {
             return response.json();
         })
         .then(data => {
+            console.log(data)
+            let checkIcloud = false;
             if (data.length > 0) {
                 actionHeader.innerHTML = '';
                 data.forEach(item => {
@@ -23,11 +25,13 @@ function handleSideBarService() {
                     avatarElement.style['background-color'] = getAvatarColor(item.userName);
 
                     let usernameElement = document.createElement('span');
-                    let usernameText = document.createTextNode(truncateString(item.userName, 23));
+                    let userNameItem = Number(item.id) === Number(getAuthId()) ? "Icloud của tôi" : item.userName;
+                    let tempCheck = Number(item.id) === Number(getAuthId());
+                    let usernameText = document.createTextNode(truncateString(userNameItem, 23));
                     usernameElement.appendChild(usernameText);
 
                     let listItem = document.createElement('li');
-                    listItem.setAttribute('id', item.id);
+                    listItem.setAttribute('id', "user-" + item.id);
                     listItem.appendChild(avatarElement);
                     listItem.appendChild(usernameElement);
                     listItem.addEventListener('click', function () {
@@ -38,9 +42,21 @@ function handleSideBarService() {
                         window.location.href = `/chat-message?id=${duoRoomId}`;
                     });
 
-                    actionHeader.appendChild(listItem);
-                });
+                    if (item.notification) {
+                        listItem.classList.add("red-notification");
+                    }
 
+                    if (!checkIcloud || checkIcloud !== tempCheck){
+                        if (!checkIcloud) {
+                            actionHeader.appendChild(listItem);
+                        } else {
+                            actionHeader.insertBefore(listItem, actionHeader.firstElementChild);
+                        }
+                    }
+                    if (tempCheck) {
+                        checkIcloud = tempCheck;
+                    }
+                });
             }
         })
         .catch(error => {

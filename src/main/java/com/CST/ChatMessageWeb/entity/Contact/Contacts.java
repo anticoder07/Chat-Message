@@ -26,6 +26,7 @@ public class Contacts {
 
 	private Long idSend;
 
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "usersContact_id", nullable = false)
 	private UsersContacts usersContact;

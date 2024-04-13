@@ -1,5 +1,6 @@
 package com.CST.ChatMessageWeb.services;
 
+import com.CST.ChatMessageWeb.entity.Contact.EStateNotification;
 import com.CST.ChatMessageWeb.entity.Users;
 import com.CST.ChatMessageWeb.payload.dto.UserItemContactDto;
 import com.CST.ChatMessageWeb.repository.UserRepo;
@@ -28,7 +29,7 @@ public class SearchServices {
 		return filteredList.stream().map(
 						(item) -> {
 							return new UserItemContactDto(
-											item, "hello world"
+											item, "hello world", EStateNotification.ALL
 							);
 						}
 		).toList();
